@@ -3,7 +3,7 @@ import SwiftUI
 struct LilyGaugeStyle: GaugeStyle {
     var fillColor: Color = Color("GreenPrimary")
     var trackColor: Color = Color(UIColor.systemGray5)
-    var height: CGFloat = 16
+    var height: CGFloat = 12
 
     func makeBody(configuration: Configuration) -> some View {
         GeometryReader { geometry in

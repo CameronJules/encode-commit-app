@@ -9,7 +9,7 @@ import SwiftUI
 
 struct Button3DStyle: ButtonStyle {
     let color: Color
-    var width: CGFloat = 85
+    var width: CGFloat? = 85
 
     private let height: CGFloat = 42
     private let cornerRadius: CGFloat = 12
@@ -22,13 +22,13 @@ struct Button3DStyle: ButtonStyle {
             // Shadow - same size as face, offset down so only bottom 4px peeks out
             RoundedRectangle(cornerRadius: cornerRadius)
                 .fill(darkerColor)
-                .frame(width: width, height: height - depthHeight)
+                .frame(maxWidth: width, minHeight: height - depthHeight, maxHeight: height - depthHeight)
                 .offset(y: depthHeight)
 
             // Face with label - moves down together when pressed
             RoundedRectangle(cornerRadius: cornerRadius)
                 .fill(color)
-                .frame(width: width, height: height - depthHeight)
+                .frame(maxWidth: width, minHeight: height - depthHeight, maxHeight: height - depthHeight)
                 .overlay(
                     configuration.label
                         .font(.custom("Fredoka-SemiBold", size: 16))
@@ -36,7 +36,7 @@ struct Button3DStyle: ButtonStyle {
                 )
                 .offset(y: isPressed ? depthHeight : 0)
         }
-        .frame(width: width, height: height)
+        .frame(maxWidth: width, minHeight: height, maxHeight: height)
         .animation(.spring(response: 0.2, dampingFraction: 0.6), value: isPressed)
     }
 
@@ -61,19 +61,17 @@ struct Button3DStyle: ButtonStyle {
         Button("Done") {
             print("Button tapped!")
         }
-        .buttonStyle(Button3DStyle(color: Color("GreenPrimary"), width: .infinity))
+        .buttonStyle(Button3DStyle(color: Color("GreenPrimary"), width: nil))
 
         Button("Start") {
             print("Start tapped!")
         }
-        .buttonStyle(Button3DStyle(color:
-                                    Color("BluePrimary"),
-                                   width: .infinity))
+        .buttonStyle(Button3DStyle(color: Color("BluePrimary"), width: nil))
 
         Button("Cancel") {
             print("Cancel tapped!")
         }
-        .buttonStyle(Button3DStyle(color: Color("PurplePrimary"), width: .infinity))
+        .buttonStyle(Button3DStyle(color: Color("PurplePrimary"), width: nil))
     }
     .padding()
 }

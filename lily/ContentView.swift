@@ -7,38 +7,33 @@
 
 import SwiftUI
 import SwiftData
-import UIKit
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @State private var selectedTab: NavbarTab = .home
 
     var body: some View {
-        VStack(spacing: 20) {
-            Text("hello World")
-                .font(.custom("Fredoka-Regular", size: 24))
-
-            // Test 3D Button
-            Button("Done") {
-                print("3D Button tapped!")
-            }
-            .buttonStyle(Button3DStyle(color: .green, width: 120))
-
-            Button("Print All Fonts") {
-                for family in UIFont.familyNames.sorted() {
-                    print("Family: \(family)")
-                    for name in UIFont.fontNames(forFamilyName: family) {
-                        print("  - \(name)")
-                    }
+        VStack(spacing: 0) {
+            Group {
+                switch selectedTab {
+                case .home:
+                    HomeView()
+                case .chat:
+                    ChatView()
+                case .shop:
+                    ShopView()
+                case .settings:
+                    SettingsView()
                 }
             }
-        }
-    }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
 
+            NavbarView(selectedTab: $selectedTab)
+        }
+        .ignoresSafeArea(.keyboard)
+    }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+        .modelContainer(for: [Todo.self, Subtask.self], inMemory: true)
 }
-
