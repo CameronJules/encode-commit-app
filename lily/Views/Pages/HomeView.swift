@@ -6,20 +6,36 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct HomeView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \Todo.sortOrder) private var todos: [Todo]
+    @State private var viewModel = TodoViewModel()
+
     var body: some View {
-        VStack {
-            Spacer()
-            Text("Home")
-                .font(.largeTitle)
-                .fontWeight(.semibold)
-            Spacer()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        TodoTabView(todos: todos, viewModel: viewModel)
+            .onAppear {
+                viewModel.modelContext = modelContext
+            }
+            .sheet(isPresented: $viewModel.isDetailSheetPresented) {
+                TodoDetailSheet(viewModel: viewModel)
+            }
     }
 }
 
 #Preview {
-    HomeView()
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: Todo.self, Subtask.self, configurations: config)
+
+    let todo1 = Todo(name: "Complete project proposal", descriptionText: "Draft the initial proposal")
+    let todo2 = Todo(name: "Review code changes", status: .active)
+    let todo3 = Todo(name: "Weekly planning session", status: .complete)
+
+    container.mainContext.insert(todo1)
+    container.mainContext.insert(todo2)
+    container.mainContext.insert(todo3)
+
+    return HomeView()
+        .modelContainer(container)
 }

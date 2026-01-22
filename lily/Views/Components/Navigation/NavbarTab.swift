@@ -20,9 +20,9 @@ enum NavbarTab: CaseIterable {
         case .chat:
             return "chat.SFSymbol"
         case .shop:
-            return "frame17"
+            return "rounded.shop"
         case .settings:
-            return "cog.SFSymbol"
+            return "profile.SFSymbol"
         }
     }
 }

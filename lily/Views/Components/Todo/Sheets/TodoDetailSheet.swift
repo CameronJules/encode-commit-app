@@ -90,8 +90,9 @@ struct TodoDetailSheet: View {
                 }
             }
         }
-        .presentationDetents([.medium, .large])
+        .presentationDetents([.fraction(0.8)])
         .presentationDragIndicator(.visible)
+        .presentationBackground(.white)
     }
 }
 
