@@ -22,8 +22,7 @@ struct CreateTodoButtonView: View {
                     .foregroundColor(Color("BluePrimary"))
 
                 Text("Add Task")
-                    .font(.custom("Fredoka-Medium", size: 16))
-                    .foregroundColor(Color("BluePrimary"))
+                    .textStyle(.body1Action)
             }
             .frame(maxWidth: .infinity)
             .frame(height: 56)

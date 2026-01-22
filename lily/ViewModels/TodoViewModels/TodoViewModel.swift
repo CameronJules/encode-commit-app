@@ -14,6 +14,9 @@ final class TodoViewModel {
     // MARK: - Dependencies
     var modelContext: ModelContext?
 
+    // MARK: - Movement State
+    let movementState = TodoMovementState()
+
     // MARK: - Bulk Edit Mode
     var isInBulkEditMode: Bool = false
     var selectedTodoIds: Set<UUID> = []

@@ -11,21 +11,27 @@ import SwiftUI
 
 struct TodoStatusControlView: View {
     @Binding var status: TodoStatus
+    var onStatusChange: ((TodoStatus, TodoStatus) -> Void)? = nil
 
     private let size: CGFloat = 24
     private let cornerRadius: CGFloat = 6
 
     var body: some View {
         Button {
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+            let oldStatus = status
+            let newStatus: TodoStatus = {
                 switch status {
-                case .inactive:
-                    status = .active
-                case .active:
-                    status = .complete
-                case .complete:
-                    status = .active
+                case .inactive: return .active
+                case .active: return .complete
+                case .complete: return .active
                 }
+            }()
+
+            // Notify before the change
+            onStatusChange?(oldStatus, newStatus)
+
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                status = newStatus
             }
         } label: {
             ZStack {

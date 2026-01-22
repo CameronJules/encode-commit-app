@@ -11,12 +11,32 @@ import SwiftData
 struct TodoItemView: View {
     @Bindable var todo: Todo
     var viewModel: TodoViewModel
+    var slideDirection: TodoMovementDirection = .none
 
     private let cornerRadius: CGFloat = 12
     private let padding: CGFloat = 16
 
     private var isSelected: Bool {
         viewModel.isSelected(todo.id)
+    }
+
+    private var slideTransition: AnyTransition {
+        switch slideDirection {
+        case .none:
+            return .opacity
+        case .left:
+            // Regressing (complete→active): slide out left, slide in from right
+            return .asymmetric(
+                insertion: .move(edge: .trailing).combined(with: .opacity),
+                removal: .move(edge: .leading).combined(with: .opacity)
+            )
+        case .right:
+            // Advancing (capture→active, active→complete): slide out right, slide in from left
+            return .asymmetric(
+                insertion: .move(edge: .leading).combined(with: .opacity),
+                removal: .move(edge: .trailing).combined(with: .opacity)
+            )
+        }
     }
 
     var body: some View {
@@ -50,11 +70,14 @@ struct TodoItemView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
 
             // Status control
-            TodoStatusControlView(status: $todo.status)
+            TodoStatusControlView(status: $todo.status) { oldStatus, newStatus in
+                viewModel.movementState.recordMovement(from: oldStatus, to: newStatus)
+            }
         }
         .padding(padding)
         .background(Color("TodoCardBackground"))
         .cornerRadius(cornerRadius)
+        .transition(slideTransition)
         .overlay(
             RoundedRectangle(cornerRadius: cornerRadius)
                 .stroke(isSelected ? Color("BluePrimary") : Color("TodoCardBorder"), lineWidth: isSelected ? 2 : 1)

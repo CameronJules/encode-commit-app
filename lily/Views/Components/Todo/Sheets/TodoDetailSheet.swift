@@ -79,14 +79,21 @@ struct TodoDetailSheet: View {
                 }
                 .padding(20)
             }
-            .navigationTitle("Edit Task")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                ToolbarItem(placement: .principal) {
+                    Text("Edit Task")
+                        .textStyle(.h4)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
                         viewModel.closeDetailSheet()
+                    } label: {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.gray)
                     }
-                    .font(.custom("Fredoka-Regular", size: 16))
+                    .buttonStyle(.plain)
                 }
             }
         }

@@ -7,6 +7,7 @@ enum TextStyle {
     case h4
     case body1
     case body1Bold
+    case body1Action
     case body2
     case body2Bold
     case tagline

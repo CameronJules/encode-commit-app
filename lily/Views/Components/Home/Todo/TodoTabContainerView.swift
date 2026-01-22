@@ -17,7 +17,7 @@ struct TodoTabContainerView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            TodoTabHeaderView(selectedTab: $selectedTab)
+            TodoTabHeaderView(selectedTab: $selectedTab, movementState: viewModel.movementState)
 
             TabView(selection: $selectedTab) {
                 ForEach(HomeTabType.allCases, id: \.self) { tabType in

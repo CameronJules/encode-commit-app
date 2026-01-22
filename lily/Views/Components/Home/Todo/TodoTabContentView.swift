@@ -27,12 +27,17 @@ struct TodoTabContentView: View {
                 }
 
                 ForEach(filteredTodos) { todo in
-                    TodoItemView(todo: todo, viewModel: viewModel)
+                    TodoItemView(
+                        todo: todo,
+                        viewModel: viewModel,
+                        slideDirection: viewModel.movementState.lastMovementDirection
+                    )
                 }
             }
             .padding(.horizontal, 20)
             .padding(.top, 4)
             .padding(.bottom, 20)
+            .animation(.spring(response: 0.4, dampingFraction: 0.8), value: filteredTodos.map { $0.id })
         }
     }
 }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TodoTabHeaderView: View {
     @Binding var selectedTab: HomeTabType
+    var movementState: TodoMovementState? = nil
 
     private var canGoBack: Bool {
         selectedTab.rawValue > 0
@@ -16,6 +17,20 @@ struct TodoTabHeaderView: View {
 
     private var canGoForward: Bool {
         selectedTab.rawValue < HomeTabType.allCases.count - 1
+    }
+
+    private var leftChevronColor: Color {
+        if let state = movementState, state.highlightedChevron == .left {
+            return Color("BluePrimary")
+        }
+        return canGoBack ? Color("InputText") : Color("PlaceholderText")
+    }
+
+    private var rightChevronColor: Color {
+        if let state = movementState, state.highlightedChevron == .right {
+            return Color("BluePrimary")
+        }
+        return canGoForward ? Color("InputText") : Color("PlaceholderText")
     }
 
     var body: some View {
@@ -29,15 +44,15 @@ struct TodoTabHeaderView: View {
             } label: {
                 Image(systemName: "chevron.left")
                     .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(canGoBack ? Color("InputText") : Color("PlaceholderText"))
+                    .foregroundColor(leftChevronColor)
+                    .animation(.easeInOut(duration: 0.2), value: movementState?.highlightedChevron)
             }
             .disabled(!canGoBack)
 
             Spacer()
 
             Text(selectedTab.title)
-                .font(.custom("Fredoka-SemiBold", size: 18))
-                .foregroundColor(Color("InputText"))
+                .textStyle(.h4)
 
             Spacer()
 
@@ -50,7 +65,8 @@ struct TodoTabHeaderView: View {
             } label: {
                 Image(systemName: "chevron.right")
                     .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(canGoForward ? Color("InputText") : Color("PlaceholderText"))
+                    .foregroundColor(rightChevronColor)
+                    .animation(.easeInOut(duration: 0.2), value: movementState?.highlightedChevron)
             }
             .disabled(!canGoForward)
         }
