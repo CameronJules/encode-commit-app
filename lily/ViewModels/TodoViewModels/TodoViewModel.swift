@@ -83,6 +83,35 @@ final class TodoViewModel {
         selectedTodoIds.removeAll()
     }
 
+    func toggleSelectAllTodos(in todos: [Todo], forStatus status: TodoStatus) {
+        let filtered = todos.filter { $0.status == status }
+        let allSelected = filtered.allSatisfy { selectedTodoIds.contains($0.id) }
+
+        if allSelected {
+            for todo in filtered {
+                selectedTodoIds.remove(todo.id)
+            }
+        } else {
+            for todo in filtered {
+                selectedTodoIds.insert(todo.id)
+            }
+        }
+    }
+
+    func activateSelectedTodos(from todos: [Todo]) {
+        for todo in todos where selectedTodoIds.contains(todo.id) {
+            todo.status = .active
+        }
+        exitBulkEditMode()
+    }
+
+    func completeSelectedTodos(from todos: [Todo]) {
+        for todo in todos where selectedTodoIds.contains(todo.id) {
+            todo.status = .complete
+        }
+        exitBulkEditMode()
+    }
+
     // MARK: - Detail Sheet Methods
 
     func openDetailSheet(for todo: Todo) {
@@ -103,12 +132,12 @@ final class TodoViewModel {
         subtaskViewModel.clear()
     }
 
-    func saveChanges() {
+    func saveChanges(project: Project? = nil) {
         guard let modelContext else { return }
 
         if isCreatingNewTodo {
             // Create new todo only when Done is pressed
-            let newTodo = Todo(name: editingName, descriptionText: editingDescription, sortOrder: pendingTodoSortOrder)
+            let newTodo = Todo(name: editingName, descriptionText: editingDescription, sortOrder: pendingTodoSortOrder, project: project)
             modelContext.insert(newTodo)
             subtaskViewModel.applyChanges(to: newTodo)
         } else if let todo = selectedTodoForEditing {

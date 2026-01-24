@@ -17,7 +17,12 @@ struct TodoTabContainerView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            TodoTabHeaderView(selectedTab: $selectedTab, movementState: viewModel.movementState)
+            TodoTabHeaderView(
+                selectedTab: $selectedTab,
+                movementState: viewModel.movementState,
+                viewModel: viewModel,
+                todos: todos
+            )
 
             TabView(selection: $selectedTab) {
                 ForEach(HomeTabType.allCases, id: \.self) { tabType in
@@ -31,6 +36,11 @@ struct TodoTabContainerView: View {
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .animation(.spring(response: 0.3, dampingFraction: 0.8), value: selectedTab)
+            .highPriorityGesture(
+                viewModel.isInBulkEditMode
+                    ? DragGesture().onChanged { _ in }.onEnded { _ in }
+                    : nil
+            )
         }
         .background(Color.white)
         .cornerRadius(topCornerRadius, corners: [.topLeft, .topRight])

@@ -26,12 +26,28 @@ struct TodoTabContentView: View {
                     }
                 }
 
-                ForEach(filteredTodos) { todo in
-                    TodoItemView(
-                        todo: todo,
-                        viewModel: viewModel,
-                        slideDirection: viewModel.movementState.lastMovementDirection
-                    )
+                if filteredTodos.isEmpty {
+                    // Empty state view
+                    VStack(spacing: 16) {
+                        Spacer()
+                        Image("FrogNTumbleweed")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxWidth: 100)
+                        Text("Nothing here Yet!")
+                            .textStyle(.tagline)
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 80)
+                } else {
+                    ForEach(filteredTodos) { todo in
+                        TodoItemView(
+                            todo: todo,
+                            viewModel: viewModel,
+                            slideDirection: viewModel.movementState.lastMovementDirection
+                        )
+                    }
                 }
             }
             .padding(.horizontal, 20)

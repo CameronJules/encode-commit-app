@@ -14,13 +14,21 @@ struct lilyApp: App {
         let schema = Schema([
             Todo.self,
             Subtask.self,
+            Project.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
-            fatalError("Could not create ModelContainer: \(error)")
+            // Schema changed - delete old store and retry
+            let url = URL.applicationSupportDirectory.appending(path: "default.store")
+            try? FileManager.default.removeItem(at: url)
+            do {
+                return try ModelContainer(for: schema, configurations: [modelConfiguration])
+            } catch {
+                fatalError("Could not create ModelContainer: \(error)")
+            }
         }
     }()
 

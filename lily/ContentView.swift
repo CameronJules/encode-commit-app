@@ -10,30 +10,47 @@ import SwiftData
 
 struct ContentView: View {
     @State private var selectedTab: NavbarTab = .home
+    @State private var isShowingProjectList: Bool = false
+    @State private var projectViewModel = ProjectViewModel()
 
     var body: some View {
-        VStack(spacing: 0) {
-            Group {
-                switch selectedTab {
-                case .home:
-                    HomeView()
-                case .chat:
-                    ChatView()
-                case .shop:
-                    ShopView()
-                case .settings:
-                    SettingsView()
+        ZStack {
+            VStack(spacing: 0) {
+                Group {
+                    switch selectedTab {
+                    case .home:
+                        HomeView(projectViewModel: projectViewModel)
+                    case .chat:
+                        ChatView()
+                    case .shop:
+                        ShopView()
+                    case .settings:
+                        SettingsView()
+                    }
                 }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            NavbarView(selectedTab: $selectedTab)
+                NavbarView(selectedTab: $selectedTab)
+            }
+
+            if isShowingProjectList {
+                ProjectListView(viewModel: projectViewModel) {
+                    isShowingProjectList = false
+                    projectViewModel.isProjectListPresented = false
+                }
+                .transition(.move(edge: .trailing))
+                .zIndex(1)
+            }
         }
+        .animation(.easeInOut(duration: 0.3), value: isShowingProjectList)
         .ignoresSafeArea(.keyboard)
+        .onChange(of: projectViewModel.isProjectListPresented) { _, newValue in
+            isShowingProjectList = newValue
+        }
     }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: [Todo.self, Subtask.self], inMemory: true)
+        .modelContainer(for: [Todo.self, Subtask.self, Project.self], inMemory: true)
 }

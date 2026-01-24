@@ -10,6 +10,7 @@ import SwiftData
 
 struct TodoDetailSheet: View {
     @Bindable var viewModel: TodoViewModel
+    var selectedProject: Project?
     @Environment(\.modelContext) private var modelContext
 
     private var isNameValid: Bool {
@@ -69,7 +70,7 @@ struct TodoDetailSheet: View {
 
                     // Done button
                     Button {
-                        viewModel.saveChanges()
+                        viewModel.saveChanges(project: selectedProject)
                     } label: {
                         Text("Done")
                     }
@@ -105,7 +106,7 @@ struct TodoDetailSheet: View {
 
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: Todo.self, Subtask.self, configurations: config)
+    let container = try! ModelContainer(for: Todo.self, Subtask.self, Project.self, configurations: config)
 
     let todo = Todo(name: "Complete project proposal", descriptionText: "Draft the initial proposal")
     let subtask1 = Subtask(name: "Research competitors", sortOrder: 0)
@@ -117,6 +118,6 @@ struct TodoDetailSheet: View {
     let viewModel = TodoViewModel()
     viewModel.openDetailSheet(for: todo)
 
-    return TodoDetailSheet(viewModel: viewModel)
+    return TodoDetailSheet(viewModel: viewModel, selectedProject: nil)
         .modelContainer(container)
 }

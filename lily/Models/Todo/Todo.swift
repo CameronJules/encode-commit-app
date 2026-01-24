@@ -13,18 +13,25 @@ final class Todo {
     var id: UUID
     var name: String
     var descriptionText: String
-    var status: TodoStatus
+    var statusRawValue: String
     var createdAt: Date
     var sortOrder: Int
     @Relationship(deleteRule: .cascade, inverse: \Subtask.parentTodo) var subtasks: [Subtask]
+    var project: Project?
 
-    init(id: UUID = UUID(), name: String, descriptionText: String = "", status: TodoStatus = .inactive, createdAt: Date = Date(), sortOrder: Int = 0, subtasks: [Subtask] = []) {
+    var status: TodoStatus {
+        get { TodoStatus(rawValue: statusRawValue) ?? .inactive }
+        set { statusRawValue = newValue.rawValue }
+    }
+
+    init(id: UUID = UUID(), name: String, descriptionText: String = "", status: TodoStatus = .inactive, createdAt: Date = Date(), sortOrder: Int = 0, subtasks: [Subtask] = [], project: Project? = nil) {
         self.id = id
         self.name = name
         self.descriptionText = descriptionText
-        self.status = status
+        self.statusRawValue = status.rawValue
         self.createdAt = createdAt
         self.sortOrder = sortOrder
         self.subtasks = subtasks
+        self.project = project
     }
 }

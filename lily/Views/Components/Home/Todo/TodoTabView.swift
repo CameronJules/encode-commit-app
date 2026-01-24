@@ -11,13 +11,17 @@ import SwiftData
 struct TodoTabView: View {
     let todos: [Todo]
     var viewModel: TodoViewModel
+    var projectViewModel: ProjectViewModel
     @State private var selectedTab: HomeTabType = .capture
 
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .bottom) {
-                MascotPlaceholderView()
-                    .ignoresSafeArea()
+                MascotPlaceholderView(
+                    projectName: projectViewModel.selectedProjectName,
+                    onProjectButtonTap: { projectViewModel.openProjectList() }
+                )
+                .ignoresSafeArea()
 
                 TodoTabContainerView(
                     todos: todos,
@@ -32,7 +36,7 @@ struct TodoTabView: View {
 
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: Todo.self, Subtask.self, configurations: config)
+    let container = try! ModelContainer(for: Todo.self, Subtask.self, Project.self, configurations: config)
 
     let todo1 = Todo(name: "Complete project proposal", descriptionText: "Draft the initial proposal")
     let todo2 = Todo(name: "Review code changes", status: .active)
@@ -44,7 +48,8 @@ struct TodoTabView: View {
 
     return TodoTabView(
         todos: [todo1, todo2, todo3],
-        viewModel: TodoViewModel()
+        viewModel: TodoViewModel(),
+        projectViewModel: ProjectViewModel()
     )
     .modelContainer(container)
 }

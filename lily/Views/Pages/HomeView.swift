@@ -12,21 +12,30 @@ struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Todo.sortOrder) private var todos: [Todo]
     @State private var viewModel = TodoViewModel()
+    var projectViewModel: ProjectViewModel
+
+    private var filteredTodos: [Todo] {
+        if let selectedProject = projectViewModel.selectedProject {
+            return todos.filter { $0.project?.id == selectedProject.id }
+        }
+        return todos
+    }
 
     var body: some View {
-        TodoTabView(todos: todos, viewModel: viewModel)
+        TodoTabView(todos: filteredTodos, viewModel: viewModel, projectViewModel: projectViewModel)
             .onAppear {
                 viewModel.modelContext = modelContext
+                projectViewModel.modelContext = modelContext
             }
             .sheet(isPresented: $viewModel.isDetailSheetPresented) {
-                TodoDetailSheet(viewModel: viewModel)
+                TodoDetailSheet(viewModel: viewModel, selectedProject: projectViewModel.selectedProject)
             }
     }
 }
 
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: Todo.self, Subtask.self, configurations: config)
+    let container = try! ModelContainer(for: Todo.self, Subtask.self, Project.self, configurations: config)
 
     let todo1 = Todo(name: "Complete project proposal", descriptionText: "Draft the initial proposal")
     let todo2 = Todo(name: "Review code changes", status: .active)
@@ -36,6 +45,6 @@ struct HomeView: View {
     container.mainContext.insert(todo2)
     container.mainContext.insert(todo3)
 
-    return HomeView()
+    return HomeView(projectViewModel: ProjectViewModel())
         .modelContainer(container)
 }

@@ -14,7 +14,7 @@ struct TextStyleModifier: ViewModifier {
         switch style {
         case .h1, .h2:
             return "Fredoka-Bold"
-        case .h3, .h4, .buttonText:
+        case .h3, .h4, .h4Active, .buttonText:
             return "Fredoka-SemiBold"
         case .body1Bold, .body1Action, .body2Bold:
             return "Fredoka-Medium"
@@ -31,7 +31,7 @@ struct TextStyleModifier: ViewModifier {
             return 32
         case .h3:
             return 26
-        case .h4:
+        case .h4, .h4Active:
             return 22
         case .body1, .body1Bold, .body1Action, .buttonText:
             return 18
@@ -49,7 +49,7 @@ struct TextStyleModifier: ViewModifier {
             return 32 * (-2.0 / 100) // -0.64
         case .h3:
             return 26 * (1.0 / 100) // 0.26
-        case .h4:
+        case .h4, .h4Active:
             return 22 * (1.0 / 100) // 0.22
         case .body1:
             return 18 * (2.0 / 100) // 0.36
@@ -70,10 +70,10 @@ struct TextStyleModifier: ViewModifier {
         switch style {
         case .h4:
             return Color("H4Text")
+        case .h4Active, .body1Action:
+            return Color("BluePrimary")
         case .body1, .body1Bold, .body2, .body2Bold:
             return Color("BodyText")
-        case .body1Action:
-            return Color("BluePrimary")
         case .tagline:
             return Color("TaglineText")
         case .h1, .h2, .h3, .buttonText:
