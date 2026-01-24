@@ -13,16 +13,10 @@ struct HomeView: View {
     @Query(sort: \Todo.sortOrder) private var todos: [Todo]
     @State private var viewModel = TodoViewModel()
     var projectViewModel: ProjectViewModel
-
-    private var filteredTodos: [Todo] {
-        if let selectedProject = projectViewModel.selectedProject {
-            return todos.filter { $0.project?.id == selectedProject.id }
-        }
-        return todos
-    }
+    var onChatButtonTap: (() -> Void)?
 
     var body: some View {
-        TodoTabView(todos: filteredTodos, viewModel: viewModel, projectViewModel: projectViewModel)
+        TodoTabView(todos: todos, viewModel: viewModel, projectViewModel: projectViewModel, onChatButtonTap: onChatButtonTap)
             .onAppear {
                 viewModel.modelContext = modelContext
                 projectViewModel.modelContext = modelContext
@@ -45,6 +39,6 @@ struct HomeView: View {
     container.mainContext.insert(todo2)
     container.mainContext.insert(todo3)
 
-    return HomeView(projectViewModel: ProjectViewModel())
+    return HomeView(projectViewModel: ProjectViewModel(), onChatButtonTap: { print("Chat tapped") })
         .modelContainer(container)
 }

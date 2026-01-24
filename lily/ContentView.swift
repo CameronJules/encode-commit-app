@@ -11,6 +11,7 @@ import SwiftData
 struct ContentView: View {
     @State private var selectedTab: NavbarTab = .home
     @State private var isShowingProjectList: Bool = false
+    @State private var isShowingChat: Bool = false
     @State private var projectViewModel = ProjectViewModel()
 
     var body: some View {
@@ -19,9 +20,11 @@ struct ContentView: View {
                 Group {
                     switch selectedTab {
                     case .home:
-                        HomeView(projectViewModel: projectViewModel)
-                    case .chat:
-                        ChatView()
+                        HomeView(projectViewModel: projectViewModel, onChatButtonTap: {
+                            isShowingChat = true
+                        })
+                    case .stats:
+                        StatsView()
                     case .shop:
                         ShopView()
                     case .settings:
@@ -41,8 +44,17 @@ struct ContentView: View {
                 .transition(.move(edge: .trailing))
                 .zIndex(1)
             }
+
+            if isShowingChat {
+                ChatView {
+                    isShowingChat = false
+                }
+                .transition(.move(edge: .trailing))
+                .zIndex(1)
+            }
         }
         .animation(.easeInOut(duration: 0.3), value: isShowingProjectList)
+        .animation(.easeInOut(duration: 0.3), value: isShowingChat)
         .ignoresSafeArea(.keyboard)
         .onChange(of: projectViewModel.isProjectListPresented) { _, newValue in
             isShowingProjectList = newValue

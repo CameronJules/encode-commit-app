@@ -12,6 +12,7 @@ struct TodoTabView: View {
     let todos: [Todo]
     var viewModel: TodoViewModel
     var projectViewModel: ProjectViewModel
+    var onChatButtonTap: (() -> Void)?
     @State private var selectedTab: HomeTabType = .capture
 
     var body: some View {
@@ -19,13 +20,15 @@ struct TodoTabView: View {
             ZStack(alignment: .bottom) {
                 MascotPlaceholderView(
                     projectName: projectViewModel.selectedProjectName,
-                    onProjectButtonTap: { projectViewModel.openProjectList() }
+                    onProjectButtonTap: { projectViewModel.openProjectList() },
+                    onChatButtonTap: onChatButtonTap
                 )
                 .ignoresSafeArea()
 
                 TodoTabContainerView(
                     todos: todos,
                     viewModel: viewModel,
+                    projectViewModel: projectViewModel,
                     selectedTab: $selectedTab
                 )
                 .frame(height: geometry.size.height * 0.65)
@@ -49,7 +52,8 @@ struct TodoTabView: View {
     return TodoTabView(
         todos: [todo1, todo2, todo3],
         viewModel: TodoViewModel(),
-        projectViewModel: ProjectViewModel()
+        projectViewModel: ProjectViewModel(),
+        onChatButtonTap: { print("Chat tapped") }
     )
     .modelContainer(container)
 }

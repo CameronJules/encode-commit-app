@@ -26,6 +26,20 @@ final class ProjectViewModel {
         selectedProject?.name ?? "All Tasks"
     }
 
+    // MARK: - Filtering
+
+    /// Returns todos for the selected project, or all todos if no project selected
+    func todos(from allTodos: [Todo]) -> [Todo] {
+        guard let selectedProject = selectedProject else { return allTodos }
+        return allTodos.filter { $0.project?.id == selectedProject.id }
+    }
+
+    /// Returns todos for a specific project, or all todos if nil
+    func todos(for project: Project?, from allTodos: [Todo]) -> [Todo] {
+        guard let project = project else { return allTodos }
+        return allTodos.filter { $0.project?.id == project.id }
+    }
+
     // MARK: - Methods
 
     func selectProject(_ project: Project?) {

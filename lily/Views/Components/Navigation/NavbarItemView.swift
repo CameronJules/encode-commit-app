@@ -30,7 +30,7 @@ struct NavbarItemView: View {
 #Preview {
     HStack(spacing: 40) {
         NavbarItemView(tab: .home, isSelected: true) {}
-        NavbarItemView(tab: .chat, isSelected: false) {}
+        NavbarItemView(tab: .stats, isSelected: false) {}
         NavbarItemView(tab: .shop, isSelected: false) {}
         NavbarItemView(tab: .settings, isSelected: false) {}
     }

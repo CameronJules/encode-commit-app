@@ -12,31 +12,25 @@ struct TodoTabHeaderView: View {
     var movementState: TodoMovementState? = nil
     var viewModel: TodoViewModel? = nil
     var todos: [Todo] = []
+    var selectedProject: Project? = nil
 
-    private var canGoBack: Bool {
-        selectedTab.rawValue > 0
-    }
-
-    private var canGoForward: Bool {
-        selectedTab.rawValue < HomeTabType.allCases.count - 1
-    }
-
-    private var leftChevronColor: Color {
-        if let state = movementState, state.highlightedChevron == .left {
-            return Color("BluePrimary")
+    private var projectFilteredTodos: [Todo] {
+        todos.filter { todo in
+            selectedProject == nil || todo.project?.id == selectedProject?.id
         }
-        return canGoBack ? Color("InputText") : Color("PlaceholderText")
-    }
-
-    private var rightChevronColor: Color {
-        if let state = movementState, state.highlightedChevron == .right {
-            return Color("BluePrimary")
-        }
-        return canGoForward ? Color("InputText") : Color("PlaceholderText")
     }
 
     private let checkboxSize: CGFloat = 24
     private let checkboxCornerRadius: CGFloat = 6
+
+    private func mapChevronDirection(_ direction: TodoMovementDirection?) -> ChevronDirection? {
+        guard let direction else { return nil }
+        switch direction {
+        case .left: return .left
+        case .right: return .right
+        case .none: return nil
+        }
+    }
 
     var body: some View {
         if let viewModel, viewModel.isInBulkEditMode {
@@ -47,44 +41,11 @@ struct TodoTabHeaderView: View {
     }
 
     private var normalHeader: some View {
-        HStack {
-            Button {
-                if canGoBack {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                        selectedTab = HomeTabType(rawValue: selectedTab.rawValue - 1) ?? selectedTab
-                    }
-                }
-            } label: {
-                Image(systemName: "chevron.left")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(leftChevronColor)
-                    .animation(.easeInOut(duration: 0.2), value: movementState?.highlightedChevron)
-            }
-            .disabled(!canGoBack)
-
-            Spacer()
-
-            Text(selectedTab.title)
-                .textStyle(.h4)
-
-            Spacer()
-
-            Button {
-                if canGoForward {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                        selectedTab = HomeTabType(rawValue: selectedTab.rawValue + 1) ?? selectedTab
-                    }
-                }
-            } label: {
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(rightChevronColor)
-                    .animation(.easeInOut(duration: 0.2), value: movementState?.highlightedChevron)
-            }
-            .disabled(!canGoForward)
-        }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 16)
+        TabHeaderView(
+            selectedTab: $selectedTab,
+            title: selectedTab.title,
+            highlightedChevron: mapChevronDirection(movementState?.highlightedChevron)
+        )
     }
 
     private func editModeHeader(viewModel: TodoViewModel) -> some View {
@@ -103,7 +64,7 @@ struct TodoTabHeaderView: View {
             Spacer()
 
             Button {
-                viewModel.toggleSelectAllTodos(in: todos, forStatus: selectedTab.todoStatus)
+                viewModel.toggleSelectAllTodos(in: projectFilteredTodos, forStatus: selectedTab.todoStatus)
             } label: {
                 Image("stack.SFSymbol")
                     .font(.system(size: 30, weight: .heavy))
@@ -112,7 +73,7 @@ struct TodoTabHeaderView: View {
 
             if selectedTab == .capture {
                 Button {
-                    viewModel.activateSelectedTodos(from: todos)
+                    viewModel.activateSelectedTodos(from: projectFilteredTodos)
                 } label: {
                     Image("rounded.square.play.SFSymbol")
                         .foregroundColor(Color("BluePrimary"))
@@ -121,7 +82,7 @@ struct TodoTabHeaderView: View {
                 }
             } else if selectedTab == .active {
                 Button {
-                    viewModel.completeSelectedTodos(from: todos)
+                    viewModel.completeSelectedTodos(from: projectFilteredTodos)
                 } label: {
                     ZStack {
                         RoundedRectangle(cornerRadius: checkboxCornerRadius)
@@ -136,7 +97,7 @@ struct TodoTabHeaderView: View {
             }
 
             Button {
-                viewModel.deleteSelectedTodos(from: todos)
+                viewModel.deleteSelectedTodos(from: projectFilteredTodos)
             } label: {
                 Image("bin.SFSymbol")
                     .font(.system(size: 30, weight: .heavy))
@@ -148,22 +109,22 @@ struct TodoTabHeaderView: View {
     }
 }
 
-//#Preview("Normal Header") {
-//    struct PreviewWrapper: View {
-//        @State private var selectedTab: HomeTabType = .capture
-//
-//        var body: some View {
-//            VStack {
-//                TodoTabHeaderView(selectedTab: $selectedTab)
-//                    .background(Color.white)
-//
-//                Text("Selected: \(selectedTab.title)")
-//            }
-//        }
-//    }
-//
-//    return PreviewWrapper()
-//}
+#Preview("Normal Header") {
+    struct PreviewWrapper: View {
+        @State private var selectedTab: HomeTabType = .capture
+
+        var body: some View {
+            VStack {
+                TodoTabHeaderView(selectedTab: $selectedTab)
+                    .background(Color.white)
+
+                Text("Selected: \(selectedTab.title)")
+            }
+        }
+    }
+
+    return PreviewWrapper()
+}
 
 #Preview("Edit Mode Header") {
     struct PreviewWrapper: View {

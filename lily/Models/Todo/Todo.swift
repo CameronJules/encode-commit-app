@@ -15,21 +15,32 @@ final class Todo {
     var descriptionText: String
     var statusRawValue: String
     var createdAt: Date
+    var completedAt: Date?
     var sortOrder: Int
     @Relationship(deleteRule: .cascade, inverse: \Subtask.parentTodo) var subtasks: [Subtask]
     var project: Project?
 
     var status: TodoStatus {
         get { TodoStatus(rawValue: statusRawValue) ?? .inactive }
-        set { statusRawValue = newValue.rawValue }
+        set {
+            let oldStatus = TodoStatus(rawValue: statusRawValue) ?? .inactive
+            statusRawValue = newValue.rawValue
+
+            // Update completedAt when transitioning TO .complete
+            if newValue == .complete && oldStatus != .complete {
+                completedAt = Date()
+            }
+            // Note: completedAt is preserved when moving away from .complete
+        }
     }
 
-    init(id: UUID = UUID(), name: String, descriptionText: String = "", status: TodoStatus = .inactive, createdAt: Date = Date(), sortOrder: Int = 0, subtasks: [Subtask] = [], project: Project? = nil) {
+    init(id: UUID = UUID(), name: String, descriptionText: String = "", status: TodoStatus = .inactive, createdAt: Date = Date(), completedAt: Date? = nil, sortOrder: Int = 0, subtasks: [Subtask] = [], project: Project? = nil) {
         self.id = id
         self.name = name
         self.descriptionText = descriptionText
         self.statusRawValue = status.rawValue
         self.createdAt = createdAt
+        self.completedAt = completedAt
         self.sortOrder = sortOrder
         self.subtasks = subtasks
         self.project = project

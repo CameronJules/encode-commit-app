@@ -11,39 +11,42 @@ import SwiftData
 struct TodoTabContainerView: View {
     let todos: [Todo]
     var viewModel: TodoViewModel
+    var projectViewModel: ProjectViewModel
     @Binding var selectedTab: HomeTabType
 
     private let topCornerRadius: CGFloat = 24
 
     var body: some View {
-        VStack(spacing: 0) {
-            TodoTabHeaderView(
-                selectedTab: $selectedTab,
-                movementState: viewModel.movementState,
-                viewModel: viewModel,
-                todos: todos
-            )
+        CardContainerView(backgroundColor: .white, cornerRadius: topCornerRadius) {
+            VStack(spacing: 0) {
+                TodoTabHeaderView(
+                    selectedTab: $selectedTab,
+                    movementState: viewModel.movementState,
+                    viewModel: viewModel,
+                    todos: todos,
+                    selectedProject: projectViewModel.selectedProject
+                )
 
-            TabView(selection: $selectedTab) {
-                ForEach(HomeTabType.allCases, id: \.self) { tabType in
-                    TodoTabContentView(
-                        tabType: tabType,
-                        todos: todos,
-                        viewModel: viewModel
-                    )
-                    .tag(tabType)
+                TabView(selection: $selectedTab) {
+                    ForEach(HomeTabType.allCases, id: \.self) { tabType in
+                        TodoTabContentView(
+                            tabType: tabType,
+                            todos: todos,
+                            viewModel: viewModel,
+                            selectedProject: projectViewModel.selectedProject
+                        )
+                        .tag(tabType)
+                    }
                 }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .animation(.spring(response: 0.3, dampingFraction: 0.8), value: selectedTab)
+                .highPriorityGesture(
+                    viewModel.isInBulkEditMode
+                        ? DragGesture().onChanged { _ in }.onEnded { _ in }
+                        : nil
+                )
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .animation(.spring(response: 0.3, dampingFraction: 0.8), value: selectedTab)
-            .highPriorityGesture(
-                viewModel.isInBulkEditMode
-                    ? DragGesture().onChanged { _ in }.onEnded { _ in }
-                    : nil
-            )
         }
-        .background(Color.white)
-        .cornerRadius(topCornerRadius, corners: [.topLeft, .topRight])
     }
 }
 
@@ -64,6 +67,7 @@ struct TodoTabContainerView: View {
                 TodoTabContainerView(
                     todos: [],
                     viewModel: TodoViewModel(),
+                    projectViewModel: ProjectViewModel(),
                     selectedTab: $selectedTab
                 )
             }

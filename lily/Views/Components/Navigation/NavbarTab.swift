@@ -9,7 +9,7 @@ import Foundation
 
 enum NavbarTab: CaseIterable {
     case home
-    case chat
+    case stats
     case shop
     case settings
 
@@ -17,8 +17,8 @@ enum NavbarTab: CaseIterable {
         switch self {
         case .home:
             return "house.SFSymbol"
-        case .chat:
-            return "chat.SFSymbol"
+        case .stats:
+            return "award.SFSymbol"
         case .shop:
             return "rounded.shop"
         case .settings:

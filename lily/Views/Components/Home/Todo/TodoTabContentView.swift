@@ -12,9 +12,10 @@ struct TodoTabContentView: View {
     let tabType: HomeTabType
     let todos: [Todo]
     var viewModel: TodoViewModel
+    var selectedProject: Project?
 
     private var filteredTodos: [Todo] {
-        todos.filter { $0.status == tabType.todoStatus }
+        viewModel.todos(withStatus: tabType.todoStatus, for: selectedProject, from: todos)
     }
 
     var body: some View {
@@ -73,7 +74,8 @@ struct TodoTabContentView: View {
     return TodoTabContentView(
         tabType: .capture,
         todos: [todo1, todo2, todo3],
-        viewModel: TodoViewModel()
+        viewModel: TodoViewModel(),
+        selectedProject: nil
     )
     .modelContainer(container)
 }

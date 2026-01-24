@@ -10,6 +10,7 @@ import SwiftUI
 struct MascotPlaceholderView: View {
     var projectName: String = "All Tasks"
     var onProjectButtonTap: (() -> Void)?
+    var onChatButtonTap: (() -> Void)?
 
     // Adjust these values to change the crop position and zoom
     private let cropOffsetX: CGFloat = -200
@@ -17,44 +18,63 @@ struct MascotPlaceholderView: View {
     private let cropZoom: CGFloat = 0.8
 
     var body: some View {
-        GeometryReader { geometry in
-            ZStack(alignment: .top) {
-                // Background image with fixed crop offset and zoom
-                Image("DayBg")
-                    .resizable()
-                    .scaledToFill()
-                    .scaleEffect(cropZoom)
-                    .offset(x: cropOffsetX, y: cropOffsetY)
-                    .frame(width: geometry.size.width, height: geometry.size.height)
-                    .clipped()
+        if let onChatButtonTap {
+            HeroSectionView(
+                backgroundImage: "DayBg",
+                cropOffsetX: cropOffsetX,
+                cropOffsetY: cropOffsetY,
+                cropZoom: cropZoom,
+                headerContent: { headerView },
+                actionContent: { chatButton(action: onChatButtonTap) }
+            )
+        } else {
+            HeroSectionView(
+                backgroundImage: "DayBg",
+                cropOffsetX: cropOffsetX,
+                cropOffsetY: cropOffsetY,
+                cropZoom: cropZoom,
+                headerContent: { headerView }
+            )
+        }
+    }
 
-                // Overlay UI
-                HStack {
-                    Text(projectName)
-                        .font(.custom("Fredoka-SemiBold", size: 18))
-                        .foregroundColor(.white)
+    private var headerView: some View {
+        HStack {
+            Text(projectName)
+                .font(.custom("Fredoka-SemiBold", size: 18))
+                .foregroundColor(.white)
 
-                    Spacer()
+            Spacer()
 
-                    if let onProjectButtonTap {
-                        Button {
-                            onProjectButtonTap()
-                        } label: {
-                            ProjectIconView(size: 24, circleColor: .white)
-                        }
-                        .buttonStyle(.plain)
-                    }
+            if let onProjectButtonTap {
+                Button {
+                    onProjectButtonTap()
+                } label: {
+                    ProjectIconView(size: 24, circleColor: .white)
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 60)
+                .buttonStyle(.plain)
             }
         }
+    }
+
+    private func chatButton(action: @escaping () -> Void) -> some View {
+        Button {
+            action()
+        } label: {
+            Image(systemName: "bubble.fill")
+                .font(.system(size: 20))
+                .foregroundColor(.white)
+                .frame(width: 48, height: 48)
+        }
+        .buttonStyle(.plain)
     }
 }
 
 #Preview {
-    MascotPlaceholderView(projectName: "Work") {
-        print("Project button tapped")
-    }
+    MascotPlaceholderView(
+        projectName: "Work",
+        onProjectButtonTap: { print("Project button tapped") },
+        onChatButtonTap: { print("Chat button tapped") }
+    )
     .frame(height: 300)
 }

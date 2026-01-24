@@ -112,6 +112,24 @@ final class TodoViewModel {
         exitBulkEditMode()
     }
 
+    // MARK: - Filtering
+
+    /// Returns todos filtered by status
+    func todos(withStatus status: TodoStatus, from todos: [Todo]) -> [Todo] {
+        todos.filter { $0.status == status }
+    }
+
+    /// Returns todos filtered by status, inherently scoped to the given project
+    /// - When project is provided: returns only that project's todos with the status
+    /// - When project is nil (All Tasks): returns all todos with the status
+    func todos(withStatus status: TodoStatus, for project: Project?, from allTodos: [Todo]) -> [Todo] {
+        allTodos.filter { todo in
+            let matchesStatus = todo.status == status
+            let matchesProject = project == nil || todo.project?.id == project?.id
+            return matchesStatus && matchesProject
+        }
+    }
+
     // MARK: - Detail Sheet Methods
 
     func openDetailSheet(for todo: Todo) {
