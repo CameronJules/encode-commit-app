@@ -29,8 +29,8 @@ struct HeroSectionView<HeaderContent: View, ActionContent: View>: View {
 
                 // Header content overlay
                 headerContent()
-                    .padding(.horizontal, 20)
-                    .padding(.top, 60)
+                    .padding(.horizontal, 16)
+                    .padding(.top, geometry.safeAreaInsets.top + 18 + 50)
 
                 // Action content - bottom right
                 if let actionContent {
@@ -94,5 +94,5 @@ extension HeroSectionView where ActionContent == EmptyView {
             .buttonStyle(.plain)
         }
     )
-    .frame(height: 300)
+    .ignoresSafeArea()
 }

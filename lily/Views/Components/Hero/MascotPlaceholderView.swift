@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MascotPlaceholderView: View {
     var projectName: String = "All Tasks"
+    var taglineText: String = ""
     var onProjectButtonTap: (() -> Void)?
     var onChatButtonTap: (() -> Void)?
 
@@ -39,22 +40,11 @@ struct MascotPlaceholderView: View {
     }
 
     private var headerView: some View {
-        HStack {
-            Text(projectName)
-                .font(.custom("Fredoka-SemiBold", size: 18))
-                .foregroundColor(.white)
-
-            Spacer()
-
-            if let onProjectButtonTap {
-                Button {
-                    onProjectButtonTap()
-                } label: {
-                    ProjectIconView(size: 24, circleColor: .white)
-                }
-                .buttonStyle(.plain)
-            }
-        }
+        HeroHeaderView(
+            projectName: projectName,
+            taglineText: taglineText,
+            onGridButtonTap: onProjectButtonTap
+        )
     }
 
     private func chatButton(action: @escaping () -> Void) -> some View {
@@ -73,8 +63,9 @@ struct MascotPlaceholderView: View {
 #Preview {
     MascotPlaceholderView(
         projectName: "Work",
+        taglineText: "378 Lillies",
         onProjectButtonTap: { print("Project button tapped") },
         onChatButtonTap: { print("Chat button tapped") }
     )
-    .frame(height: 300)
+    .ignoresSafeArea()
 }

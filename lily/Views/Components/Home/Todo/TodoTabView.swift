@@ -15,11 +15,21 @@ struct TodoTabView: View {
     var onChatButtonTap: (() -> Void)?
     @State private var selectedTab: HomeTabType = .capture
 
+    private var heroTitle: String {
+        let name = projectViewModel.selectedProjectName
+        if let characterName = projectViewModel.selectedProject?.characterName,
+           !characterName.isEmpty {
+            return "\(name) with \(characterName)"
+        }
+        return name
+    }
+
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .bottom) {
                 MascotPlaceholderView(
-                    projectName: projectViewModel.selectedProjectName,
+                    projectName: heroTitle,
+                    taglineText: "378 Lillies",
                     onProjectButtonTap: { projectViewModel.openProjectList() },
                     onChatButtonTap: onChatButtonTap
                 )
