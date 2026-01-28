@@ -32,7 +32,7 @@ struct HeatmapMonthSectionView: View {
                     .fill(Color.secondary.opacity(0.3))
                     .frame(height: 1)
             }
-            .padding(.top, 8)
+            .padding(.top, 4)
 
             // Week rows
             ForEach(month.weeks) { week in

@@ -44,16 +44,20 @@ final class HeatmapViewModel {
     private let calendar = Calendar.current
 
     func loadData(for project: Project) {
-        let completionCounts = buildCompletionCounts(from: project)
-        months = generateMonths(completionCounts: completionCounts, project: project)
+        loadData(from: project.todos)
+    }
+
+    func loadData(from todos: [Todo]) {
+        let completionCounts = buildCompletionCounts(from: todos)
+        months = generateMonths(completionCounts: completionCounts, todos: todos)
     }
 
     // MARK: - Build Completion Counts
 
-    private func buildCompletionCounts(from project: Project) -> [DateComponents: Int] {
+    private func buildCompletionCounts(from todos: [Todo]) -> [DateComponents: Int] {
         var counts: [DateComponents: Int] = [:]
 
-        let completedTodos = project.todos.filter { $0.status == .complete && $0.completedAt != nil }
+        let completedTodos = todos.filter { $0.status == .complete && $0.completedAt != nil }
 
         for todo in completedTodos {
             guard let completedAt = todo.completedAt else { continue }
@@ -66,12 +70,12 @@ final class HeatmapViewModel {
 
     // MARK: - Generate Month/Week Structure
 
-    private func generateMonths(completionCounts: [DateComponents: Int], project: Project) -> [HeatmapMonth] {
+    private func generateMonths(completionCounts: [DateComponents: Int], todos: [Todo]) -> [HeatmapMonth] {
         let today = Date()
 
         // Determine start date: beginning of current year or earliest completion
         let startOfYear = calendar.date(from: calendar.dateComponents([.year], from: today))!
-        let earliestCompletion = project.todos
+        let earliestCompletion = todos
             .compactMap { $0.completedAt }
             .min()
 

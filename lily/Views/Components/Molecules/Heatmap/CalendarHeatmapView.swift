@@ -9,11 +9,16 @@ import SwiftUI
 import SwiftData
 
 struct CalendarHeatmapView: View {
-    let project: Project
+    let project: Project?
+    let todos: [Todo]
 
     @State private var viewModel = HeatmapViewModel()
 
     private let dayLabels = ["M", "T", "W", "T", "F", "S", "S"]
+
+    private var effectiveTodos: [Todo] {
+        project?.todos ?? todos
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -31,35 +36,48 @@ struct CalendarHeatmapView: View {
                 }
             }
 
-            // Scrollable month content
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 0) {
-                    ForEach(viewModel.months) { month in
-                        HeatmapMonthSectionView(
-                            month: month,
-                            viewModel: viewModel
-                        )
+            // Scrollable month content - starts scrolled to bottom showing recent dates
+            GeometryReader { geometry in
+                ScrollView {
+                    VStack(spacing: 0) {
+                        // Spacer pushes content to bottom when there's extra space
+                        
+
+                        LazyVStack(alignment: .leading, spacing: 0) {
+                            ForEach(viewModel.months) { month in
+                                HeatmapMonthSectionView(
+                                    month: month,
+                                    viewModel: viewModel
+                                )
+                            }
+                        }
+
+                        // Spacer pushes content up from the bottom
+                        Spacer(minLength: geometry.size.height * 0.4)
                     }
                 }
-                .padding(.bottom, 16)
+                .defaultScrollAnchor(.bottom)
+                .scrollIndicators(.hidden)
+                
             }
-            .defaultScrollAnchor(.bottom)
-            .scrollIndicators(.hidden)
         }
         .fixedSize(horizontal: true, vertical: false)
         .frame(maxWidth: .infinity, alignment: .center)
         .onAppear {
-            viewModel.loadData(for: project)
+            viewModel.loadData(from: effectiveTodos)
         }
-        .onChange(of: project.todos.count) {
-            viewModel.loadData(for: project)
+        .onChange(of: effectiveTodos.count) {
+            viewModel.loadData(from: effectiveTodos)
+        }
+        .onChange(of: project?.id) {
+            viewModel.loadData(from: effectiveTodos)
         }
     }
 }
 
 // MARK: - Preview
 
-#Preview {
+#Preview("With Project") {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: Project.self, Todo.self, configurations: config)
 
@@ -92,7 +110,37 @@ struct CalendarHeatmapView: View {
         }
     }
 
-    return CalendarHeatmapView(project: project)
+    return CalendarHeatmapView(project: project, todos: [])
+        .padding()
+        .modelContainer(container)
+}
+
+#Preview("All Tasks") {
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: Project.self, Todo.self, configurations: config)
+
+    let calendar = Calendar.current
+    let today = Date()
+
+    var todos: [Todo] = []
+    let sampleCompletions: [(daysAgo: Int, count: Int)] = [
+        (0, 2), (1, 3), (2, 1), (5, 4), (10, 2)
+    ]
+
+    for (daysAgo, count) in sampleCompletions {
+        guard let date = calendar.date(byAdding: .day, value: -daysAgo, to: today) else { continue }
+        for i in 0..<count {
+            let todo = Todo(
+                name: "Task \(daysAgo)-\(i)",
+                status: .complete,
+                completedAt: date
+            )
+            container.mainContext.insert(todo)
+            todos.append(todo)
+        }
+    }
+
+    return CalendarHeatmapView(project: nil, todos: todos)
         .padding()
         .modelContainer(container)
 }

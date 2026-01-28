@@ -24,7 +24,7 @@ struct ContentView: View {
                             isShowingChat = true
                         })
                     case .stats:
-                        StatsView()
+                        StatsView(projectViewModel: projectViewModel)
                     case .shop:
                         ShopView()
                     case .settings:
