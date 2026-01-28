@@ -2,12 +2,13 @@ import SwiftUI
 
 struct TextStyleModifier: ViewModifier {
     let style: TextStyle
+    var colorOverride: Color? = nil
 
     func body(content: Content) -> some View {
         content
             .font(.custom(fontName, size: fontSize))
             .tracking(letterSpacing)
-            .foregroundColor(textColor)
+            .foregroundColor(colorOverride ?? textColor)
     }
 
     private var fontName: String {

@@ -19,6 +19,8 @@ where Tab.RawValue == Int {
     var horizontalPadding: CGFloat = 20
     var verticalPadding: CGFloat = 16
     var highlightedChevron: ChevronDirection? = nil
+    var titleColor: Color? = nil
+    var chevronColor: Color? = nil
 
     private var canGoBack: Bool {
         selectedTab.rawValue > 0
@@ -29,6 +31,9 @@ where Tab.RawValue == Int {
     }
 
     private var leftChevronColor: Color {
+        if let chevronColor {
+            return canGoBack ? chevronColor : chevronColor.opacity(0.4)
+        }
         if highlightedChevron == .left {
             return Color("BluePrimary")
         }
@@ -36,6 +41,9 @@ where Tab.RawValue == Int {
     }
 
     private var rightChevronColor: Color {
+        if let chevronColor {
+            return canGoForward ? chevronColor : chevronColor.opacity(0.4)
+        }
         if highlightedChevron == .right {
             return Color("BluePrimary")
         }
@@ -62,8 +70,13 @@ where Tab.RawValue == Int {
 
             Spacer()
 
-            Text(title)
-                .textStyle(.h4)
+            if let titleColor {
+                Text(title)
+                    .textStyle(.h4, color: titleColor)
+            } else {
+                Text(title)
+                    .textStyle(.h4)
+            }
 
             Spacer()
 

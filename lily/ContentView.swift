@@ -27,7 +27,7 @@ struct ContentView: View {
                     case .stats:
                         StatsView(projectViewModel: projectViewModel, walletViewModel: walletViewModel)
                     case .shop:
-                        ShopView()
+                        ShopView(walletViewModel: walletViewModel)
                     case .settings:
                         SettingsView()
                     }

@@ -8,27 +8,36 @@
 import SwiftUI
 
 struct ShopView: View {
+    var walletViewModel: WalletViewModel
+    @State private var viewModel = ShopViewModel()
+    @State private var selectedTab: ShopTabType = .essentials
+
     var body: some View {
-        VStack {
-            Image("LitaShop")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 350, height: 350)
-                .padding(.top, 150)
-        
-            Text("Coming Soon!")
-                .font(.custom("Fredoka-SemiBold", size: 32))
-                .foregroundColor(.litaPurple)
-        
-            Text("Collect lillies and unlock new items!")
-                .textStyle(.tagline)
-            
-            Spacer()
+        GeometryReader { geometry in
+            ZStack(alignment: .bottom) {
+                ShopHeroView(walletBalance: walletViewModel.formattedBalance)
+                    .ignoresSafeArea()
+
+                ShopCardContainerView(screenHeight: geometry.size.height) {
+                    VStack(spacing: 0) {
+                        TabHeaderView(
+                            selectedTab: $selectedTab,
+                            title: selectedTab.title,
+                            titleColor: .white,
+                            chevronColor: .white
+                        )
+
+                        ShopItemGridView(items: viewModel.items(for: selectedTab))
+                            .padding(.top, 8)
+
+                        Spacer()
+                    }
+                }
+            }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
 #Preview {
-    ShopView()
+    ShopView(walletViewModel: WalletViewModel())
 }
