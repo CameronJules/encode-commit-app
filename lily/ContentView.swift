@@ -13,6 +13,7 @@ struct ContentView: View {
     @State private var isShowingProjectList: Bool = false
     @State private var isShowingChat: Bool = false
     @State private var projectViewModel = ProjectViewModel()
+    @State private var walletViewModel = WalletViewModel()
 
     var body: some View {
         ZStack {
@@ -20,11 +21,11 @@ struct ContentView: View {
                 Group {
                     switch selectedTab {
                     case .home:
-                        HomeView(projectViewModel: projectViewModel, onChatButtonTap: {
+                        HomeView(projectViewModel: projectViewModel, walletViewModel: walletViewModel, onChatButtonTap: {
                             isShowingChat = true
                         })
                     case .stats:
-                        StatsView(projectViewModel: projectViewModel)
+                        StatsView(projectViewModel: projectViewModel, walletViewModel: walletViewModel)
                     case .shop:
                         ShopView()
                     case .settings:
@@ -64,5 +65,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: [Todo.self, Subtask.self, Project.self, Character.self], inMemory: true)
+        .modelContainer(for: [Todo.self, Subtask.self, Project.self, Character.self, Wallet.self], inMemory: true)
 }

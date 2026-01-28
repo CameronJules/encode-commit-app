@@ -19,6 +19,7 @@ final class Todo {
     var sortOrder: Int
     @Relationship(deleteRule: .cascade, inverse: \Subtask.parentTodo) var subtasks: [Subtask]
     var project: Project?
+    var coinsAwarded: Bool = false
 
     var status: TodoStatus {
         get { TodoStatus(rawValue: statusRawValue) ?? .inactive }
@@ -34,7 +35,7 @@ final class Todo {
         }
     }
 
-    init(id: UUID = UUID(), name: String, descriptionText: String = "", status: TodoStatus = .inactive, createdAt: Date = Date(), completedAt: Date? = nil, sortOrder: Int = 0, subtasks: [Subtask] = [], project: Project? = nil) {
+    init(id: UUID = UUID(), name: String, descriptionText: String = "", status: TodoStatus = .inactive, createdAt: Date = Date(), completedAt: Date? = nil, sortOrder: Int = 0, subtasks: [Subtask] = [], project: Project? = nil, coinsAwarded: Bool = false) {
         self.id = id
         self.name = name
         self.descriptionText = descriptionText
@@ -44,5 +45,6 @@ final class Todo {
         self.sortOrder = sortOrder
         self.subtasks = subtasks
         self.project = project
+        self.coinsAwarded = coinsAwarded
     }
 }

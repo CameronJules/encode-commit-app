@@ -71,7 +71,7 @@ struct TodoItemView: View {
 
             // Status control
             TodoStatusControlView(status: $todo.status) { oldStatus, newStatus in
-                viewModel.movementState.recordMovement(from: oldStatus, to: newStatus)
+                viewModel.handleStatusChange(for: todo, from: oldStatus, to: newStatus)
             }
         }
         .padding(padding)

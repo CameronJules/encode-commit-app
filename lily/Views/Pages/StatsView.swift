@@ -11,6 +11,7 @@ import SwiftData
 struct StatsView: View {
     @Query(sort: \Todo.sortOrder) private var todos: [Todo]
     var projectViewModel: ProjectViewModel
+    var walletViewModel: WalletViewModel
 
     @State private var selectedTab: StatsTabType = .tasksDone
 
@@ -35,7 +36,7 @@ struct StatsView: View {
             ZStack(alignment: .bottom) {
                 MascotPlaceholderView(
                     projectName: heroTitle,
-                    taglineText: "378 Lillies",
+                    taglineText: walletViewModel.formattedBalance,
                     onProjectButtonTap: { projectViewModel.openProjectList() }
                 )
                 .ignoresSafeArea()
@@ -71,6 +72,6 @@ struct StatsView: View {
     container.mainContext.insert(todo2)
     container.mainContext.insert(todo3)
 
-    return StatsView(projectViewModel: ProjectViewModel())
+    return StatsView(projectViewModel: ProjectViewModel(), walletViewModel: WalletViewModel())
         .modelContainer(container)
 }

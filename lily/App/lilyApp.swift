@@ -16,6 +16,7 @@ struct lilyApp: App {
             Subtask.self,
             Project.self,
             Character.self,
+            Wallet.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

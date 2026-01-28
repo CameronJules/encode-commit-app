@@ -13,6 +13,7 @@ import SwiftData
 final class TodoViewModel {
     // MARK: - Dependencies
     var modelContext: ModelContext?
+    var walletViewModel: WalletViewModel?
 
     // MARK: - Movement State
     let movementState = TodoMovementState()
@@ -107,9 +108,22 @@ final class TodoViewModel {
 
     func completeSelectedTodos(from todos: [Todo]) {
         for todo in todos where selectedTodoIds.contains(todo.id) {
+            let oldStatus = todo.status
             todo.status = .complete
+            if oldStatus != .complete {
+                walletViewModel?.awardCompletionCoins(for: todo)
+            }
         }
         exitBulkEditMode()
+    }
+
+    // MARK: - Status Change Handling
+
+    func handleStatusChange(for todo: Todo, from oldStatus: TodoStatus, to newStatus: TodoStatus) {
+        movementState.recordMovement(from: oldStatus, to: newStatus)
+        if newStatus == .complete && oldStatus != .complete {
+            walletViewModel?.awardCompletionCoins(for: todo)
+        }
     }
 
     // MARK: - Filtering
