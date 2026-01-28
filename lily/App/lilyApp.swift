@@ -15,6 +15,7 @@ struct lilyApp: App {
             Todo.self,
             Subtask.self,
             Project.self,
+            Character.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

@@ -12,17 +12,15 @@ import SwiftData
 final class Project {
     var id: UUID
     var name: String
-    var characterName: String
-    var characterId: String
     var createdAt: Date
     var sortOrder: Int
     @Relationship(deleteRule: .cascade, inverse: \Todo.project) var todos: [Todo]
+    @Relationship(deleteRule: .cascade, inverse: \Character.project) var character: Character?
 
-    init(id: UUID = UUID(), name: String, characterName: String = "", characterId: String = "", createdAt: Date = Date(), sortOrder: Int = 0, todos: [Todo] = []) {
+    init(id: UUID = UUID(), name: String, character: Character? = nil, createdAt: Date = Date(), sortOrder: Int = 0, todos: [Todo] = []) {
         self.id = id
         self.name = name
-        self.characterName = characterName
-        self.characterId = characterId
+        self.character = character
         self.createdAt = createdAt
         self.sortOrder = sortOrder
         self.todos = todos

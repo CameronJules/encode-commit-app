@@ -27,7 +27,8 @@ struct ProjectListView: View {
                     // Project cards
                     ForEach(projects) { project in
                         ProjectCardView(
-                            characterName: project.characterName,
+                            characterName: project.character?.name ?? "",
+                            frogAssetName: project.character?.imageName,
                             projectName: project.name
                         ) {
                             viewModel.selectProject(project)
@@ -81,10 +82,12 @@ struct ProjectListView: View {
 
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: Project.self, Todo.self, Subtask.self, configurations: config)
+    let container = try! ModelContainer(for: Project.self, Todo.self, Subtask.self, Character.self, configurations: config)
 
-    let project1 = Project(name: "Work", characterName: "Lily", sortOrder: 0)
-    let project2 = Project(name: "Personal", characterName: "Max", sortOrder: 1)
+    let char1 = Character(name: "Lily", imageName: "BlueFrog")
+    let char2 = Character(name: "Max", imageName: "GreenFrog")
+    let project1 = Project(name: "Work", character: char1, sortOrder: 0)
+    let project2 = Project(name: "Personal", character: char2, sortOrder: 1)
 
     container.mainContext.insert(project1)
     container.mainContext.insert(project2)

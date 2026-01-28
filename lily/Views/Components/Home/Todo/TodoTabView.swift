@@ -17,7 +17,7 @@ struct TodoTabView: View {
 
     private var heroTitle: String {
         let name = projectViewModel.selectedProjectName
-        if let characterName = projectViewModel.selectedProject?.characterName,
+        if let characterName = projectViewModel.selectedProject?.character?.name,
            !characterName.isEmpty {
             return "\(name) with \(characterName)"
         }
@@ -49,7 +49,7 @@ struct TodoTabView: View {
 
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: Todo.self, Subtask.self, Project.self, configurations: config)
+    let container = try! ModelContainer(for: Todo.self, Subtask.self, Project.self, Character.self, configurations: config)
 
     let todo1 = Todo(name: "Complete project proposal", descriptionText: "Draft the initial proposal")
     let todo2 = Todo(name: "Review code changes", status: .active)

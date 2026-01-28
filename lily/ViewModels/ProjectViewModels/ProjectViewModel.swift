@@ -19,7 +19,7 @@ final class ProjectViewModel {
     var isProjectListPresented: Bool = false
     var isAddProjectSheetPresented: Bool = false
     var newProjectName: String = ""
-    var newCharacterName: String = ""
+    var characterViewModel = CharacterViewModel()
 
     // MARK: - Computed Properties
     var selectedProjectName: String {
@@ -56,14 +56,13 @@ final class ProjectViewModel {
         let projects = (try? modelContext.fetch(descriptor)) ?? []
         let nextSortOrder = (projects.first?.sortOrder ?? -1) + 1
 
-        let trimmedCharacterName = newCharacterName.trimmingCharacters(in: .whitespacesAndNewlines)
-        let characterId = UUID().uuidString
+        let character = characterViewModel.makeCharacter()
 
-        let project = Project(name: trimmedName, characterName: trimmedCharacterName, characterId: characterId, sortOrder: nextSortOrder)
+        let project = Project(name: trimmedName, character: character, sortOrder: nextSortOrder)
         modelContext.insert(project)
 
         newProjectName = ""
-        newCharacterName = ""
+        characterViewModel.clear()
         isAddProjectSheetPresented = false
         selectedProject = project
     }
@@ -82,13 +81,13 @@ final class ProjectViewModel {
 
     func openAddProjectSheet() {
         newProjectName = ""
-        newCharacterName = ""
+        characterViewModel.clear()
         isAddProjectSheetPresented = true
     }
 
     func closeAddProjectSheet() {
         isAddProjectSheetPresented = false
         newProjectName = ""
-        newCharacterName = ""
+        characterViewModel.clear()
     }
 }

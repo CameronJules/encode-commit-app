@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ProjectCardView: View {
     let characterName: String
+    let frogAssetName: String?
     let projectName: String
     var onTap: () -> Void
 
@@ -17,10 +18,17 @@ struct ProjectCardView: View {
             onTap()
         } label: {
             VStack(spacing: 12) {
-                // Character image placeholder
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color(white: 0.85))
-                    .frame(width: 100, height: 100)
+                // Character frog image
+                if let frogAssetName, !frogAssetName.isEmpty {
+                    Image(frogAssetName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: FrogDisplaySize.large.dimension, height: FrogDisplaySize.large.dimension)
+                } else {
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color(white: 0.85))
+                        .frame(width: FrogDisplaySize.large.dimension, height: FrogDisplaySize.large.dimension)
+                }
 
                 // Text container
                 VStack(spacing: 4) {
@@ -54,6 +62,7 @@ struct ProjectCardView: View {
 
         ProjectCardView(
             characterName: "Lily",
+            frogAssetName: "BlueFrog",
             projectName: "Work Tasks"
         ) {
             print("Card tapped")

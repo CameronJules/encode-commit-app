@@ -10,8 +10,9 @@ import SwiftUI
 struct AddProjectSheet: View {
     @Bindable var viewModel: ProjectViewModel
 
-    private var isNameValid: Bool {
-        !viewModel.newProjectName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    private var isFormValid: Bool {
+        !viewModel.newProjectName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        viewModel.characterViewModel.selectedFrog != nil
     }
 
     var body: some View {
@@ -22,9 +23,11 @@ struct AddProjectSheet: View {
                         .font(.custom("Fredoka-Medium", size: 14))
                         .foregroundColor(Color("PlaceholderText"))
 
-                    TextField("Enter character name", text: $viewModel.newCharacterName)
+                    TextField("Enter character name", text: $viewModel.characterViewModel.characterName)
                         .textFieldStyle(LilyTextFieldStyle())
                 }
+
+
 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Project Name")
@@ -34,6 +37,14 @@ struct AddProjectSheet: View {
                     TextField("Enter project name", text: $viewModel.newProjectName)
                         .textFieldStyle(LilyTextFieldStyle())
                 }
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Select Frog")
+                        .font(.custom("Fredoka-Medium", size: 14))
+                        .foregroundColor(Color("PlaceholderText"))
+
+                    FrogSelectionGridView(viewModel: viewModel.characterViewModel, size: .large)
+                }
 
                 Spacer()
 
@@ -42,9 +53,9 @@ struct AddProjectSheet: View {
                 } label: {
                     Text("Done")
                 }
-                .buttonStyle(Button3DStyle(color: isNameValid ? Color("GreenPrimary") : Color.gray, width: nil))
+                .buttonStyle(Button3DStyle(color: isFormValid ? Color("GreenPrimary") : Color.gray, width: nil))
                 .frame(maxWidth: .infinity)
-                .disabled(!isNameValid)
+                .disabled(!isFormValid)
             }
             .padding(20)
             .navigationBarTitleDisplayMode(.inline)
@@ -65,7 +76,7 @@ struct AddProjectSheet: View {
                 }
             }
         }
-        .presentationDetents([.fraction(0.5)])
+        .presentationDetents([.fraction(0.95)])
         .presentationDragIndicator(.visible)
         .presentationBackground(.white)
     }
