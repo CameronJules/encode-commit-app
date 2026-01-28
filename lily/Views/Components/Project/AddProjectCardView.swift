@@ -14,16 +14,23 @@ struct AddProjectCardView: View {
         Button {
             onTap()
         } label: {
-            // Dotted border square with plus icon
-            RoundedRectangle(cornerRadius: 12)
-                .strokeBorder(style: StrokeStyle(lineWidth: 2, dash: [8, 4]))
-                .foregroundColor(Color(white: 0.6))
-                .frame(width: 100, height: 100)
-                .overlay(
-                    Image(systemName: "plus")
-                        .font(.system(size: 32, weight: .medium))
-                        .foregroundColor(Color(white: 0.6))
-                )
+            VStack(spacing: 12) {
+                Image("LightGreyAddFrog")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: FrogDisplaySize.large.dimension, height: FrogDisplaySize.large.dimension)
+
+                Text("Create Project")
+                    .font(.custom("Fredoka-SemiBold", size: 14))
+                    .foregroundColor(.white.opacity(0.7))
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+                    .frame(minWidth: 150)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.black.opacity(0.4))
+                    )
+            }
         }
         .buttonStyle(.plain)
     }

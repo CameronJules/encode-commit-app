@@ -21,9 +21,10 @@ struct HeroHeaderView: View {
 
                 if !taglineText.isEmpty {
                     HStack(spacing: 4) {
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.system(size: 14))
-                            .foregroundColor(Color("GreenPrimary"))
+                        Image("lily-coin")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
 
                         Text(taglineText)
                             .font(.custom("Fredoka-Regular", size: 14))
