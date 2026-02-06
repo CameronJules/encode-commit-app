@@ -14,10 +14,11 @@ struct HomeView: View {
     @State private var viewModel = TodoViewModel()
     var projectViewModel: ProjectViewModel
     var walletViewModel: WalletViewModel
+    var coinAnimationManager: CoinAnimationManager?
     var onChatButtonTap: (() -> Void)?
 
     var body: some View {
-        TodoTabView(todos: todos, viewModel: viewModel, projectViewModel: projectViewModel, walletViewModel: walletViewModel, onChatButtonTap: onChatButtonTap)
+        TodoTabView(todos: todos, viewModel: viewModel, projectViewModel: projectViewModel, walletViewModel: walletViewModel, coinAnimationManager: coinAnimationManager, onChatButtonTap: onChatButtonTap)
             .onAppear {
                 viewModel.modelContext = modelContext
                 viewModel.walletViewModel = walletViewModel

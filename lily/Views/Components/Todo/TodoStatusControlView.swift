@@ -11,6 +11,9 @@ import SwiftUI
 
 struct TodoStatusControlView: View {
     @Binding var status: TodoStatus
+    var todoId: UUID?
+    var coinAnimationManager: CoinAnimationManager?
+    var slideAnimationManager: TodoSlideAnimationManager?
     var onStatusChange: ((TodoStatus, TodoStatus) -> Void)? = nil
 
     private let size: CGFloat = 24
@@ -27,11 +30,27 @@ struct TodoStatusControlView: View {
                 }
             }()
 
-            // Notify before the change
-            onStatusChange?(oldStatus, newStatus)
+            // Trigger coin animation when completing a task (visual effect starts immediately)
+            if oldStatus == .active && newStatus == .complete, let todoId = todoId {
+                coinAnimationManager?.triggerCoinAnimation(from: todoId)
+            }
 
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                status = newStatus
+            // If slide animation manager exists, delay status change until animation completes
+            if let slideManager = slideAnimationManager, let todoId = todoId {
+                slideManager.triggerSlideAnimation(todoId: todoId, from: oldStatus, to: newStatus)
+                // Delay status change to allow slide animation to play
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                        status = newStatus
+                    }
+                    // Notify after status change so coin awarding happens at correct time
+                    onStatusChange?(oldStatus, newStatus)
+                }
+            } else {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                    status = newStatus
+                }
+                onStatusChange?(oldStatus, newStatus)
             }
         } label: {
             ZStack {
@@ -74,6 +93,15 @@ struct TodoStatusControlView: View {
             }
         }
         .buttonStyle(.plain)
+        .background(
+            GeometryReader { geometry in
+                Color.clear
+                    .preference(
+                        key: CoinSourcePositionKey.self,
+                        value: todoId.map { [$0: geometry.frame(in: .named("coinAnimationSpace"))] } ?? [:]
+                    )
+            }
+        )
     }
 }
 

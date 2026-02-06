@@ -10,6 +10,7 @@ import SwiftUI
 struct MascotPlaceholderView: View {
     var projectName: String = "All Tasks"
     var taglineText: String = ""
+    var coinAnimationManager: CoinAnimationManager?
     var onProjectButtonTap: (() -> Void)?
     var onChatButtonTap: (() -> Void)?
 
@@ -43,6 +44,7 @@ struct MascotPlaceholderView: View {
         HeroHeaderView(
             projectName: projectName,
             taglineText: taglineText,
+            coinAnimationManager: coinAnimationManager,
             onGridButtonTap: onProjectButtonTap
         )
     }

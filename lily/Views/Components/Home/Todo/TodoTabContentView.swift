@@ -12,6 +12,7 @@ struct TodoTabContentView: View {
     let tabType: HomeTabType
     let todos: [Todo]
     var viewModel: TodoViewModel
+    var coinAnimationManager: CoinAnimationManager?
     var selectedProject: Project?
 
     private var filteredTodos: [Todo] {
@@ -46,7 +47,8 @@ struct TodoTabContentView: View {
                         TodoItemView(
                             todo: todo,
                             viewModel: viewModel,
-                            slideDirection: viewModel.movementState.lastMovementDirection
+                            coinAnimationManager: coinAnimationManager,
+                            slideAnimationManager: viewModel.slideAnimationManager
                         )
                     }
                 }

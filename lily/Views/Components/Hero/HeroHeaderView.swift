@@ -10,6 +10,7 @@ import SwiftUI
 struct HeroHeaderView: View {
     var projectName: String
     var taglineText: String = ""
+    var coinAnimationManager: CoinAnimationManager?
     var onGridButtonTap: (() -> Void)?
 
     var body: some View {
@@ -25,6 +26,15 @@ struct HeroHeaderView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 16, height: 16)
+                            .background(
+                                GeometryReader { geometry in
+                                    Color.clear
+                                        .preference(
+                                            key: CoinDestinationPositionKey.self,
+                                            value: geometry.frame(in: .named("coinAnimationSpace"))
+                                        )
+                                }
+                            )
 
                         Text(taglineText)
                             .font(.custom("Fredoka-Regular", size: 14))

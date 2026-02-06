@@ -11,7 +11,8 @@ import SwiftData
 struct TodoItemView: View {
     @Bindable var todo: Todo
     var viewModel: TodoViewModel
-    var slideDirection: TodoMovementDirection = .none
+    var coinAnimationManager: CoinAnimationManager?
+    var slideAnimationManager: TodoSlideAnimationManager?
 
     private let cornerRadius: CGFloat = 12
     private let padding: CGFloat = 16
@@ -20,23 +21,18 @@ struct TodoItemView: View {
         viewModel.isSelected(todo.id)
     }
 
-    private var slideTransition: AnyTransition {
-        switch slideDirection {
-        case .none:
-            return .opacity
-        case .left:
-            // Regressing (complete→active): slide out left, slide in from right
-            return .asymmetric(
-                insertion: .move(edge: .trailing).combined(with: .opacity),
-                removal: .move(edge: .leading).combined(with: .opacity)
-            )
-        case .right:
-            // Advancing (capture→active, active→complete): slide out right, slide in from left
-            return .asymmetric(
-                insertion: .move(edge: .leading).combined(with: .opacity),
-                removal: .move(edge: .trailing).combined(with: .opacity)
-            )
+    private var slideOffset: CGFloat {
+        guard let manager = slideAnimationManager, manager.isSlidingOut(todo.id) else { return 0 }
+        switch manager.direction(for: todo.id) {
+        case .none: return 0
+        case .left: return -UIScreen.main.bounds.width   // Regressing (complete→active)
+        case .right: return UIScreen.main.bounds.width  // Advancing (capture→active, active→complete)
         }
+    }
+
+    private var slideOpacity: Double {
+        guard let manager = slideAnimationManager, manager.isSlidingOut(todo.id) else { return 1.0 }
+        return 0.0
     }
 
     var body: some View {
@@ -70,14 +66,21 @@ struct TodoItemView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
 
             // Status control
-            TodoStatusControlView(status: $todo.status) { oldStatus, newStatus in
+            TodoStatusControlView(
+                status: $todo.status,
+                todoId: todo.id,
+                coinAnimationManager: coinAnimationManager,
+                slideAnimationManager: slideAnimationManager
+            ) { oldStatus, newStatus in
                 viewModel.handleStatusChange(for: todo, from: oldStatus, to: newStatus)
             }
         }
         .padding(padding)
         .background(Color("TodoCardBackground"))
         .cornerRadius(cornerRadius)
-        .transition(slideTransition)
+        .offset(x: slideOffset)
+        .opacity(slideOpacity)
+        .animation(.easeInOut(duration: 0.3), value: slideOffset)
         .overlay(
             RoundedRectangle(cornerRadius: cornerRadius)
                 .stroke(isSelected ? Color("BluePrimary") : Color("TodoCardBorder"), lineWidth: isSelected ? 2 : 1)

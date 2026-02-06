@@ -12,6 +12,7 @@ struct TodoTabContainerView: View {
     let todos: [Todo]
     var viewModel: TodoViewModel
     var projectViewModel: ProjectViewModel
+    var coinAnimationManager: CoinAnimationManager?
     @Binding var selectedTab: HomeTabType
 
     private let topCornerRadius: CGFloat = 24
@@ -33,6 +34,7 @@ struct TodoTabContainerView: View {
                             tabType: tabType,
                             todos: todos,
                             viewModel: viewModel,
+                            coinAnimationManager: coinAnimationManager,
                             selectedProject: projectViewModel.selectedProject
                         )
                         .tag(tabType)

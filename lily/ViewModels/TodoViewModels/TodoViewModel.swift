@@ -17,6 +17,7 @@ final class TodoViewModel {
 
     // MARK: - Movement State
     let movementState = TodoMovementState()
+    let slideAnimationManager = TodoSlideAnimationManager()
 
     // MARK: - Bulk Edit Mode
     var isInBulkEditMode: Bool = false

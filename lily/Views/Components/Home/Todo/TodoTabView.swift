@@ -13,6 +13,7 @@ struct TodoTabView: View {
     var viewModel: TodoViewModel
     var projectViewModel: ProjectViewModel
     var walletViewModel: WalletViewModel
+    var coinAnimationManager: CoinAnimationManager?
     var onChatButtonTap: (() -> Void)?
     @State private var selectedTab: HomeTabType = .capture
 
@@ -31,6 +32,7 @@ struct TodoTabView: View {
                 MascotPlaceholderView(
                     projectName: heroTitle,
                     taglineText: walletViewModel.formattedBalance,
+                    coinAnimationManager: coinAnimationManager,
                     onProjectButtonTap: { projectViewModel.openProjectList() },
                     onChatButtonTap: onChatButtonTap
                 )
@@ -40,6 +42,7 @@ struct TodoTabView: View {
                     todos: todos,
                     viewModel: viewModel,
                     projectViewModel: projectViewModel,
+                    coinAnimationManager: coinAnimationManager,
                     selectedTab: $selectedTab
                 )
                 .frame(height: geometry.size.height * 0.65)

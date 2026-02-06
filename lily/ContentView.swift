@@ -14,6 +14,7 @@ struct ContentView: View {
     @State private var isShowingChat: Bool = false
     @State private var projectViewModel = ProjectViewModel()
     @State private var walletViewModel = WalletViewModel()
+    @State private var coinAnimationManager = CoinAnimationManager()
 
     var body: some View {
         ZStack {
@@ -21,7 +22,7 @@ struct ContentView: View {
                 Group {
                     switch selectedTab {
                     case .home:
-                        HomeView(projectViewModel: projectViewModel, walletViewModel: walletViewModel, onChatButtonTap: {
+                        HomeView(projectViewModel: projectViewModel, walletViewModel: walletViewModel, coinAnimationManager: coinAnimationManager, onChatButtonTap: {
                             isShowingChat = true
                         })
                     case .stats:
@@ -52,6 +53,19 @@ struct ContentView: View {
                 }
                 .transition(.move(edge: .trailing))
                 .zIndex(1)
+            }
+
+            // Coin animation overlay - highest z-index
+            CoinAnimationOverlay(coinAnimationManager: coinAnimationManager)
+                .zIndex(2)
+        }
+        .coordinateSpace(name: "coinAnimationSpace")
+        .onPreferenceChange(CoinDestinationPositionKey.self) { rect in
+            coinAnimationManager.updateDestinationPosition(rect)
+        }
+        .onPreferenceChange(CoinSourcePositionKey.self) { positions in
+            for (todoId, rect) in positions {
+                coinAnimationManager.updateSourcePosition(rect, for: todoId)
             }
         }
         .animation(.easeInOut(duration: 0.3), value: isShowingProjectList)
