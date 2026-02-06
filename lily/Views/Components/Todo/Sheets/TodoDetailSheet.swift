@@ -12,6 +12,7 @@ struct TodoDetailSheet: View {
     @Bindable var viewModel: TodoViewModel
     var selectedProject: Project?
     @Environment(\.modelContext) private var modelContext
+    @State private var aiSubtaskViewModel = AISubtaskViewModel()
 
     private var isNameValid: Bool {
         !viewModel.editingName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -67,6 +68,42 @@ struct TodoDetailSheet: View {
                     }
 
                     Spacer(minLength: 20)
+
+                    // Generate with AI button
+                    Button {
+                        Task {
+                            await aiSubtaskViewModel.generateSubtasks(
+                                todoName: viewModel.editingName,
+                                todoDescription: viewModel.editingDescription,
+                                into: viewModel.subtaskViewModel
+                            )
+                        }
+                    } label: {
+                        HStack(spacing: 8) {
+                            if aiSubtaskViewModel.isLoading {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                    .scaleEffect(0.8)
+                            } else {
+                                Image(systemName: "sparkles")
+                                    .font(.system(size: 16, weight: .semibold))
+                            }
+                            Text("Generate with AI")
+                        }
+                    }
+                    .buttonStyle(Button3DStyle(
+                        color: (isNameValid && !aiSubtaskViewModel.isLoading) ? Color("PurplePrimary") : Color.gray,
+                        width: nil
+                    ))
+                    .frame(maxWidth: .infinity)
+                    .disabled(!isNameValid || aiSubtaskViewModel.isLoading)
+
+                    if let errorMessage = aiSubtaskViewModel.errorMessage {
+                        Text(errorMessage)
+                            .font(.custom("Fredoka-Regular", size: 14))
+                            .foregroundColor(.red)
+                            .multilineTextAlignment(.center)
+                    }
 
                     // Done button
                     Button {

@@ -15,6 +15,7 @@ struct ContentView: View {
     @State private var projectViewModel = ProjectViewModel()
     @State private var walletViewModel = WalletViewModel()
     @State private var coinAnimationManager = CoinAnimationManager()
+    @State private var authViewModel = AuthViewModel()
 
     var body: some View {
         ZStack {
@@ -30,7 +31,7 @@ struct ContentView: View {
                     case .shop:
                         ShopView(walletViewModel: walletViewModel)
                     case .settings:
-                        SettingsView()
+                        SettingsView(authViewModel: authViewModel)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
