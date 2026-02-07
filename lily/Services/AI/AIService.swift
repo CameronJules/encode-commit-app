@@ -32,7 +32,31 @@ struct AIService {
         }
     }
 
+    func sendMessage(messages: [ChatMessage]) async throws -> ChatOutput {
+        guard let accessToken = keychainService.retrieve(for: .accessToken) else {
+            throw AIServiceError.notAuthenticated
+        }
+
+        let body = ChatInput(messages: messages)
+
+        do {
+            return try await performChatRequest(body: body, accessToken: accessToken)
+        } catch APIError.unauthorized {
+            let newAccessToken = try await refreshAndSaveTokens()
+            return try await performChatRequest(body: body, accessToken: newAccessToken)
+        }
+    }
+
     // MARK: - Private
+
+    private func performChatRequest(body: ChatInput, accessToken: String) async throws -> ChatOutput {
+        try await networkService.request(
+            endpoint: "/ai/chat",
+            method: .post,
+            body: body,
+            headers: ["Authorization": "Bearer \(accessToken)"]
+        )
+    }
 
     private func performRequest(body: SubtaskInput, accessToken: String) async throws -> SubtaskOutput {
         try await networkService.request(

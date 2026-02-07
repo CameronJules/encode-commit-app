@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ChatView: View {
+    var chatViewModel: ChatViewModel
     var onBack: () -> Void
 
     var body: some View {
@@ -17,14 +18,51 @@ struct ChatView: View {
                 .ignoresSafeArea()
 
             // Content area
-            VStack {
-                Spacer()
-                Text("Chat")
-                    .font(.largeTitle)
-                    .fontWeight(.semibold)
-                Spacer()
+            VStack(spacing: 0) {
+                // Header spacer
+                Color.clear
+                    .frame(height: 100)
+
+                // Messages
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        LazyVStack(spacing: 12) {
+                            ForEach(chatViewModel.messages) { message in
+                                ChatBubbleView(message: message)
+                                    .id(message.id)
+                            }
+
+                            if chatViewModel.isLoading {
+                                HStack {
+                                    ProgressView()
+                                    Spacer()
+                                }
+                                .padding(.horizontal, 20)
+                            }
+                        }
+                        .padding(.vertical, 12)
+                    }
+                    .onChange(of: chatViewModel.messages.count) {
+                        if let lastMessage = chatViewModel.messages.last {
+                            withAnimation {
+                                proxy.scrollTo(lastMessage.id, anchor: .bottom)
+                            }
+                        }
+                    }
+                }
+
+                // Error message
+                if let errorMessage = chatViewModel.errorMessage {
+                    Text(errorMessage)
+                        .font(.custom("Fredoka-Regular", size: 14))
+                        .foregroundColor(.red)
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 4)
+                }
+
+                // Input bar
+                ChatInputBar(chatViewModel: chatViewModel)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             // Custom header with back button
             HStack {
@@ -53,12 +91,73 @@ struct ChatView: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, 60)
+            .background(Color(UIColor.systemBackground))
         }
     }
 }
 
+// MARK: - Chat Bubble
+
+private struct ChatBubbleView: View {
+    let message: ChatMessage
+
+    var body: some View {
+        HStack {
+            if message.role == .user { Spacer() }
+
+            Text(message.content)
+                .font(.custom("Fredoka-Regular", size: 16))
+                .foregroundColor(message.role == .user ? .white : Color("BodyText"))
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .background(
+                    message.role == .user
+                        ? Color("BluePrimary")
+                        : Color("TextFieldBackground")
+                )
+                .cornerRadius(16)
+
+            if message.role == .assistant { Spacer() }
+        }
+        .padding(.horizontal, 20)
+    }
+}
+
+// MARK: - Input Bar
+
+private struct ChatInputBar: View {
+    @Bindable var chatViewModel: ChatViewModel
+
+    var body: some View {
+        HStack(spacing: 10) {
+            TextField("Type a message...", text: $chatViewModel.currentInput)
+                .textFieldStyle(LilyTextFieldStyle())
+
+            Button {
+                Task {
+                    await chatViewModel.sendMessage()
+                }
+            } label: {
+                Image(systemName: "arrow.up.circle.fill")
+                    .font(.system(size: 32))
+                    .foregroundColor(
+                        chatViewModel.currentInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || chatViewModel.isLoading
+                            ? Color.gray
+                            : Color("BluePrimary")
+                    )
+            }
+            .buttonStyle(.plain)
+            .disabled(
+                chatViewModel.currentInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || chatViewModel.isLoading
+            )
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 12)
+    }
+}
+
 #Preview {
-    ChatView {
+    ChatView(chatViewModel: ChatViewModel()) {
         print("Back tapped")
     }
 }

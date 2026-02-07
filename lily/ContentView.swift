@@ -16,6 +16,7 @@ struct ContentView: View {
     @State private var walletViewModel = WalletViewModel()
     @State private var coinAnimationManager = CoinAnimationManager()
     @State private var authViewModel = AuthViewModel()
+    @State private var chatViewModel = ChatViewModel()
 
     var body: some View {
         ZStack {
@@ -38,6 +39,7 @@ struct ContentView: View {
 
                 NavbarView(selectedTab: $selectedTab)
             }
+            .ignoresSafeArea(.keyboard)
 
             if isShowingProjectList {
                 ProjectListView(viewModel: projectViewModel) {
@@ -49,7 +51,8 @@ struct ContentView: View {
             }
 
             if isShowingChat {
-                ChatView {
+                ChatView(chatViewModel: chatViewModel) {
+                    chatViewModel.clearMessages()
                     isShowingChat = false
                 }
                 .transition(.move(edge: .trailing))
@@ -71,7 +74,6 @@ struct ContentView: View {
         }
         .animation(.easeInOut(duration: 0.3), value: isShowingProjectList)
         .animation(.easeInOut(duration: 0.3), value: isShowingChat)
-        .ignoresSafeArea(.keyboard)
         .onChange(of: projectViewModel.isProjectListPresented) { _, newValue in
             isShowingProjectList = newValue
         }
