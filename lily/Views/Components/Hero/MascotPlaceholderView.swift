@@ -10,6 +10,7 @@ import SwiftUI
 struct MascotPlaceholderView: View {
     var projectName: String = "All Tasks"
     var taglineText: String = ""
+    var characterImageName: String?
     var coinAnimationManager: CoinAnimationManager?
     var onProjectButtonTap: (() -> Void)?
     var onChatButtonTap: (() -> Void)?
@@ -19,24 +20,39 @@ struct MascotPlaceholderView: View {
     private let cropOffsetY: CGFloat = -170
     private let cropZoom: CGFloat = 0.8
 
+    // Adjust these values to move the character mascot
+    private let mascotOffsetX: CGFloat = -70
+    private let mascotOffsetY: CGFloat = -180
+    private let mascotSize: CGFloat = 170
+
     var body: some View {
-        if let onChatButtonTap {
-            HeroSectionView(
-                backgroundImage: "DayBg",
-                cropOffsetX: cropOffsetX,
-                cropOffsetY: cropOffsetY,
-                cropZoom: cropZoom,
-                headerContent: { headerView },
-                actionContent: { chatButton(action: onChatButtonTap) }
-            )
-        } else {
-            HeroSectionView(
-                backgroundImage: "DayBg",
-                cropOffsetX: cropOffsetX,
-                cropOffsetY: cropOffsetY,
-                cropZoom: cropZoom,
-                headerContent: { headerView }
-            )
+        ZStack {
+            if let onChatButtonTap {
+                HeroSectionView(
+                    backgroundImage: "DayBg",
+                    cropOffsetX: cropOffsetX,
+                    cropOffsetY: cropOffsetY,
+                    cropZoom: cropZoom,
+                    headerContent: { headerView },
+                    actionContent: { chatButton(action: onChatButtonTap) }
+                )
+            } else {
+                HeroSectionView(
+                    backgroundImage: "DayBg",
+                    cropOffsetX: cropOffsetX,
+                    cropOffsetY: cropOffsetY,
+                    cropZoom: cropZoom,
+                    headerContent: { headerView }
+                )
+            }
+
+            if let characterImageName {
+                Image(characterImageName)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: mascotSize, height: mascotSize)
+                    .offset(x: mascotOffsetX, y: mascotOffsetY)
+            }
         }
     }
 
@@ -64,8 +80,9 @@ struct MascotPlaceholderView: View {
 
 #Preview {
     MascotPlaceholderView(
-        projectName: "Work",
+        projectName: "Work with Lily",
         taglineText: "378 Lillies",
+        characterImageName: "BlueFrog",
         onProjectButtonTap: { print("Project button tapped") },
         onChatButtonTap: { print("Chat button tapped") }
     )

@@ -21,10 +21,10 @@ final class ShopViewModel {
 
     func fetchItems() {
         items = [
-            StoreItem(name: "Item 1", imageName: "shop-item-1", cost: 150),
-            StoreItem(name: "Item 2", imageName: "shop-item-2", cost: 10000),
-            StoreItem(name: "Item 3", imageName: "shop-item-3", cost: 500),
-            StoreItem(name: "Item 4", imageName: "shop-item-4", cost: 750)
+            StoreItem(name: "Bangle Charm", imageName: "Bangle Charm", cost: 150),
+            StoreItem(name: "Bangle", imageName: "Bangle", cost: 10000),
+            StoreItem(name: "Necklace", imageName: "NECKLACE", cost: 500),
+            StoreItem(name: "Scarf", imageName: "Scarf", cost: 750)
         ]
     }
 

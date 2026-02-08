@@ -37,6 +37,7 @@ struct StatsView: View {
                 MascotPlaceholderView(
                     projectName: heroTitle,
                     taglineText: walletViewModel.formattedBalance,
+                    characterImageName: projectViewModel.selectedProject?.character?.imageName,
                     onProjectButtonTap: { projectViewModel.openProjectList() }
                 )
                 .ignoresSafeArea()

@@ -32,6 +32,7 @@ struct TodoTabView: View {
                 MascotPlaceholderView(
                     projectName: heroTitle,
                     taglineText: walletViewModel.formattedBalance,
+                    characterImageName: projectViewModel.selectedProject?.character?.imageName,
                     coinAnimationManager: coinAnimationManager,
                     onProjectButtonTap: { projectViewModel.openProjectList() },
                     onChatButtonTap: onChatButtonTap
