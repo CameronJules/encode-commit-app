@@ -27,18 +27,19 @@ Do them when you are ready.
 Create next actions to get the ball rolling.
 Do it yourself or get some help!
 
-<gif>
+<img src="next-action.gif" alt="Next Action Demo" />
 
 # Earn and Shop
 Complete Tasks to earn coins and buy items from the shop!
-<coinn gif>
+<img src="coin-collect.gif" alt="Coin Collect Demo" />
+
 <img width="188" height="377" alt="image" src="https://github.com/user-attachments/assets/5153d5d5-2020-452b-b230-543e12b51be2" />
 
 # Emotional Intelligence
 When you don’t even know where to start, chat to your buddie for help. <br>
 Feel productive even on low days.
 
-<chat gif>
+<img src="chat.gif" alt="Chat Demo" />
 
 # Satisfying progress
 See your task completions in a github style heatmap. <br>
