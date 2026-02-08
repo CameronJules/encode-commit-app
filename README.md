@@ -1,10 +1,14 @@
 # ____ Productivity
-This is the duolingo for productivity!
-Built during encode club commit to change hack.
 
-This is the frontend, The back end can be found here: https://github.com/CameronJules/encode-commit-app-backend
+A gamified productivity app that turns to-dos into an enjoyable and sustainable experience. Think *Duolingo for productivity*.
 
-I have excluded the name to make it less searchable as I will be putting this on the app store!
+Built during the Encode Club **Commit to Change** hackathon, the app rewards consistency, breaks goals into manageable tasks, and makes staying productive feel engaging rather than overwhelming.
+
+This repository contains the **frontend** codebase.
+The **backend** is available here:
+[https://github.com/CameronJules/encode-commit-app-backend](https://github.com/CameronJules/encode-commit-app-backend)
+
+> The app name has been intentionally omitted to reduce searchability ahead of its App Store release.
 
 # Buddies
 Assign a buddy for important groups of work. <br>
@@ -31,9 +35,11 @@ Do it yourself or get some help!
 
 # Earn and Shop
 Complete Tasks to earn coins and buy items from the shop!
-<img width="177" height="371" src="coin-collect.gif" alt="Coin Collect Demo" />
 
-<img width="188" height="377" alt="image" src="https://github.com/user-attachments/assets/5153d5d5-2020-452b-b230-543e12b51be2" />
+<p align="left">
+<img width="177" height="371" src="coin-collect.gif" alt="Coin Collect Demo" />
+<img width="185" height="377" alt="image" src="https://github.com/user-attachments/assets/5153d5d5-2020-452b-b230-543e12b51be2" />
+</p>
 
 # Emotional Intelligence
 When you don’t even know where to start, chat to your buddie for help. <br>
